@@ -20,7 +20,7 @@ char sc;					// 서버에서 받은 정보를 분류하기 위한 목록코드
 char word[MAX];		// 클라이언트에서 정보를 받을 변수
 int num;					// 목록 선택 시 사용할 변수
 
-char serverIp[100];
+char serverIp[LINE];
 int  portNum;
 
 WSADATA wsaData;

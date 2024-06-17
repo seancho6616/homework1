@@ -15,10 +15,8 @@
 #define	NUM 4
 #define LINE 50
 
-char c1 = 'h';
 
 ST student;			// 클라이언트에서 사용할 구조체
-ST* stInfor=NULL;			// 서버에서 받은 정보 저장
 
 // 텍스트 색 변경 함수
 void textcolor(int colorNum) {
@@ -86,30 +84,39 @@ void searchingInterface() {
 	switch (num) {
 		case 1:
 			gotoxy(3, 20);	printf("Enter a name >  "); gets(word); 
-			c = 'c';
+			system("cls");
 			findName();		// 이름 검색 인터페이스로 이동
+			c = 'c';
+			printf("\n\n\n");
 			system("pause");
 			break;
 		case 2:
 			gotoxy(3, 20);	printf("Enter a nation >  "); gets(word);
 			c = 'n';
+			system("cls");
 			findNation();		// 나라 검색 인터페이스로 이동
+			printf("\n\n\n");
 			system("pause");
 			break;
 		case 3:
 			gotoxy(3, 20);	printf("Enter a depertment >  "); gets(word);
 			c = 'd';
+			system("cls");
 			findDepartment();	// 전공 검색 인터페이스로 이동
+			printf("\n\n\n");
 			system("pause");
 			break;
 		case 4:
 			gotoxy(3, 20);	printf("Enter an age >  "); scanf("%d", &num);
 			c = 'a';
+			system("cls");
 			findAge();				// 나이 검색 인터페이스로 이동
+			printf("\n\n\n");
 			system("pause");
 			break;
 		case 5:
 			information();			// 정보 추가 또는 제거 인터페이스
+			printf("\n\n\n");
 			system("pause");
 			break;
 		default:		// 잘못 입력할 시
@@ -147,22 +154,20 @@ void information() {
 
 // 이름 검색 인터페이스 함수
 void findName() {
-	system("cls");
 	fflush(stdin);
 	gotoxy(2, 1);	printf("+ Search for a name +\n");
 	for (int i = 0; i <= LINE; i++) {
 		printf("-");
 	}
 	gotoxy(3, 3);	printf("Name\n"); 
-	gotoxy(10, 3);	printf("Age\n");
-	gotoxy(16, 3);	printf("Nation\n");
-	gotoxy(26, 3);	printf("Department\n");
+	gotoxy(13, 3);	printf("Age\n");
+	gotoxy(23, 3);	printf("Nation\n");
+	gotoxy(33, 3);	printf("Department\n");
 	printf("\n");
 }
 
 // 나라 검색 인터페이스 함수
 void findNation() {
-	system("cls");
 	fflush(stdin);
 	gotoxy(2, 1);	printf("+ Search by Nation +\n");
 	for (int i = 0; i <= LINE; i++) {
@@ -173,7 +178,6 @@ void findNation() {
 
 // 전공 검색 인터페이스 함수
 void findDepartment() {
-	system("cls");
 	fflush(stdin);
 	gotoxy(2, 1);	printf("+ Search by Department +\n");
 	for (int i = 0; i <= LINE; i++) {
@@ -184,7 +188,6 @@ void findDepartment() {
 
 // 나이 검색 인터페이스 함수
 void findAge() {
-	system("cls");
 	fflush(stdin);
 	gotoxy(2, 1);	printf("+ Search by Age +\n");
 	for (int i = 0; i <= LINE; i++) {
