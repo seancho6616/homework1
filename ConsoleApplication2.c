@@ -74,7 +74,7 @@ unsigned WINAPI SendMsg(void* arg) {//전송용 쓰레드함수
 				c = '\0';
 				break;
 			case 'f':		// 정보 추가
-				sprintf(msg, "%s/%d/%s/%s",
+				sprintf(msg, "%c/%s/%d/%s/%s",c,
 					student.name, student.age, student.nation, student.depart);
 				send(sock, msg, strlen(msg), 0);
 				strcpy(msg, "");
@@ -95,6 +95,7 @@ unsigned WINAPI RecvMsg(void* arg) {
 	int strLen;
 	int i=3;
 	char* w = NULL;
+	int ag;
 	while (1) {//반복
 		strLen = recv(sock, msg, BUF_SIZE - 1, 0);//서버로부터 메시지를 수신한다.
 		if (strLen == -1)
@@ -106,45 +107,50 @@ unsigned WINAPI RecvMsg(void* arg) {
 			exit(0);
 		}
 		else {
+			//printf("%s\n", msg);
 			w = strtok(msg, "/");
 			if (w != NULL) {
 				sc = w[0];
+				//printf("%c\n", sc);
 				switch (sc) {
-				case 'c':		// 이름  검색 결과 출력
-					gotoxy(3, 4); printf("%s\n", strtok(NULL, "/"));
-					gotoxy(13, 4); printf("%d\n", atoi(strtok(NULL, "/")));
-					gotoxy(23, 4); printf("%s\n", strtok(NULL, "/"));
-					gotoxy(33, 4); printf("%s\n", strtok(NULL, "/"));
-					/*while (w != NULL) {
-						gotoxy(i, 4); printf("%s\n", w);
+					case 'c':		// 이름  검색 결과 출력
+						gotoxy(3, 5); printf("%s\n", strtok(NULL, "/"));
+						gotoxy(13, 5); printf("%d\n", atoi(strtok(NULL, "/")));
+						gotoxy(23, 5); printf("%s\n", strtok(NULL, "/"));
+						gotoxy(33, 5); printf("%s\n\n", strtok(NULL, "/"));
+						break;
+					case 'n':		// 나라로 검색한 결과 출력
 						w = strtok(NULL, "/");
-						i += 10;
-					}*/
-					strcpy(msg, "");
-					break;
-				case 'n':		// 나라로 검색한 결과 출력
-				case 'd':		// 전공으로 검색한 결과 출력
-				case 'a':		// 나이로 검색한 결과 출력
-					while (w != NULL) {
-						gotoxy(3, ++i); printf("%s\n", w);
+						printf("  %s\n\n", w);
+						strcpy(msg, "");
+
+						break;
+					case 'd':		// 전공으로 검색한 결과 출력
 						w = strtok(NULL, "/");
-						i++;
-					}
-					break;
-				case 'f':		// 정보 추가 확인 출력
-					textcolor(YELLOW);
-					gotoxy(9, 10);	printf("Add Information\n");
-					textcolor(WHITE);
-					break;
-				case 'o':		// 정보 삭제 확인 출력
-					textcolor(YELLOW);
-					gotoxy(8, 5);	printf("+Delete +\n");
-					textcolor(WHITE);
-					break;
+						printf("  %s\n\n", w);
+						break;
+					case 'a':		// 나이로 검색한 결과 출력
+						w = strtok(NULL, "/");
+						printf("  %s\n\n", w);
+						break;
+					case 'f':		// 정보 추가 확인 출력
+						textcolor(YELLOW);
+						gotoxy(9, 10);	printf("Add Information\n");
+						textcolor(WHITE);
+						break;
+					case 'o':		// 정보 삭제 확인 출력
+						textcolor(YELLOW);
+						gotoxy(8, 5);	printf("+Delete +\n");
+						textcolor(WHITE);
+						break;
+					case 'x':
+						printf("  No result\n\n");
+						break;
 				}
 			}
+			strcpy(msg, "");
 		}
-		strcpy(msg, "");
+		
 	}
 	return 0;
 }

@@ -87,31 +87,27 @@ void searchingInterface() {
 			system("cls");
 			findName();		// 이름 검색 인터페이스로 이동
 			c = 'c';
-			printf("\n\n\n");
 			system("pause");
 			break;
 		case 2:
 			gotoxy(3, 20);	printf("Enter a nation >  "); gets(word);
-			c = 'n';
 			system("cls");
 			findNation();		// 나라 검색 인터페이스로 이동
-			printf("\n\n\n");
+			c = 'n';
 			system("pause");
 			break;
 		case 3:
 			gotoxy(3, 20);	printf("Enter a depertment >  "); gets(word);
-			c = 'd';
 			system("cls");
 			findDepartment();	// 전공 검색 인터페이스로 이동
-			printf("\n\n\n");
+			c = 'd';
 			system("pause");
 			break;
 		case 4:
 			gotoxy(3, 20);	printf("Enter an age >  "); scanf("%d", &num);
-			c = 'a';
 			system("cls");
 			findAge();				// 나이 검색 인터페이스로 이동
-			printf("\n\n\n");
+			c = 'a';
 			system("pause");
 			break;
 		case 5:
@@ -157,13 +153,15 @@ void findName() {
 	fflush(stdin);
 	gotoxy(2, 1);	printf("+ Search for a name +\n");
 	for (int i = 0; i <= LINE; i++) {
-		printf("-");
+		textcolor(GREEN);	// 출력 텍스트 색 변경 ( 초록 )
+		printf("=");
 	}
+	textcolor(WHITE);		// 출력 텍스트 색 변경 ( 흰색 )
 	gotoxy(3, 3);	printf("Name\n"); 
 	gotoxy(13, 3);	printf("Age\n");
 	gotoxy(23, 3);	printf("Nation\n");
 	gotoxy(33, 3);	printf("Department\n");
-	printf("\n");
+	printf("\n\n");
 }
 
 // 나라 검색 인터페이스 함수
@@ -171,8 +169,10 @@ void findNation() {
 	fflush(stdin);
 	gotoxy(2, 1);	printf("+ Search by Nation +\n");
 	for (int i = 0; i <= LINE; i++) {
-		printf("-");
+		textcolor(GREEN);	// 출력 텍스트 색 변경 ( 초록 )
+		printf("=");
 	}
+	textcolor(WHITE);		// 출력 텍스트 색 변경 ( 흰색 )
 	printf("\n\n");
 }
 
@@ -181,8 +181,10 @@ void findDepartment() {
 	fflush(stdin);
 	gotoxy(2, 1);	printf("+ Search by Department +\n");
 	for (int i = 0; i <= LINE; i++) {
-		printf("-");
+		textcolor(GREEN);	// 출력 텍스트 색 변경 ( 초록 )
+		printf("=");
 	}
+	textcolor(WHITE);		// 출력 텍스트 색 변경 ( 흰색 )
 	printf("\n\n");
 }
 
@@ -191,8 +193,10 @@ void findAge() {
 	fflush(stdin);
 	gotoxy(2, 1);	printf("+ Search by Age +\n");
 	for (int i = 0; i <= LINE; i++) {
-		printf("-");
+		textcolor(GREEN);	// 출력 텍스트 색 변경 ( 초록 )
+		printf("=");
 	}
+	textcolor(WHITE);		// 출력 텍스트 색 변경 ( 흰색 )
 	printf("\n\n");
 }
 
@@ -200,10 +204,12 @@ void findAge() {
 void addInformation() {
 	system("cls");
 	fflush(stdin);
+	textcolor(YELLOW);
 	gotoxy(2, 1); printf("+ Name : \n");
 	gotoxy(2, 3); printf("+ Age : \n");
 	gotoxy(2, 5); printf("+ Nation : \n");
 	gotoxy(2, 7); printf("+ Department : \n");
+	textcolor(WHITE);
 	// 입력
 	gotoxy(11, 1); gets(student.name);
 	gotoxy(10, 3); scanf("%d", &student.age);
@@ -219,7 +225,10 @@ void delInformation() {
 	system("cls");
 	fflush(stdin); 
 	gotoxy(2, 1);	printf("Enter a name to delete\n");
-	gotoxy(3, 3);	printf(">  ");	gets(word);
+	textcolor(YELLOW);
+	gotoxy(3, 3);	printf(">  ");	
+	textcolor(WHITE);
+	gets(word);
 	textcolor(YELLOW);
 	gotoxy(8, 5);	printf("+ Delete +\n");
 	textcolor(WHITE);
