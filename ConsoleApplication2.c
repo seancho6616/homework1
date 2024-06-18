@@ -135,7 +135,7 @@ unsigned WINAPI RecvMsg(void* arg) {
 						break;
 					case 'f':		// 정보 추가 확인 출력
 						textcolor(YELLOW);
-						gotoxy(9, 10);	printf("Add Information\n");
+						gotoxy(9, 10);	printf("Add Information\n"); 
 						textcolor(WHITE);
 						break;
 					case 'o':		// 정보 삭제 확인 출력

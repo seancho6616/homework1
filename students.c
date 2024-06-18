@@ -229,9 +229,7 @@ void delInformation() {
 	gotoxy(3, 3);	printf(">  ");	
 	textcolor(WHITE);
 	gets(word);
-	textcolor(YELLOW);
-	gotoxy(8, 5);	printf("+ Delete +\n");
-	textcolor(WHITE);
+	
 	printf("\n");
 	c = 'o';
 }
