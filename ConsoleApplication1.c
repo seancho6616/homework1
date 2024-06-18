@@ -23,7 +23,7 @@
 #define	NUM 4
 
 void setStudentData(FILE* fp);
-void saveStudentData(FILE* fp);
+void saveStudentData();
 
 unsigned WINAPI HandleClient(void* arg);//Thread for Each CLient
 //void SendMsg(char* msg, int len);//Message Sending Function from server to client
@@ -51,10 +51,10 @@ char word[MAX] = "";
 //	}
 //	printf("%d", std_cnt);
 //}
+FILE* fpin;//파일포인터변수의선언
 
 int main(int argc, char* argv[]) {
 
-	FILE* fpin;//파일포인터변수의선언
 	WSADATA wsaData;
 	SOCKET serverSock, clientSock;
 	SOCKADDR_IN serverAddr, clientAddr;
@@ -67,6 +67,7 @@ int main(int argc, char* argv[]) {
 		printf("File open error...\n");
 		exit(-1);
 	}
+
 	setStudentData(fpin);
 	// End of Students Information Load
 
@@ -115,6 +116,7 @@ unsigned WINAPI HandleClient(void* arg) {
 		strLen = 0;
 		strLen = recv(clientSock, msg, BUF_SIZE - 1, 0);
 		msg[strLen] = '\0';
+		ST* temp = stInfor; 
 		printf("Server : Resieved Message -> %s\n", msg);  //확인용 
 		if (!strcmp(msg, "q")) {
 			send(clientSock, "q", 1, 0);
@@ -124,20 +126,19 @@ unsigned WINAPI HandleClient(void* arg) {
 			w = strtok(msg, "/");
 			sc = w[0];
 			printf("%c\n", sc);
-			ST* temp = stInfor;
 			switch (sc) {
-				case 'c':
+				case 'c':		// 해당 이름 정보 
 					strcpy(word, strtok(NULL, "/"));
 					printf("%s\n", word);
+					// 해당 이름 확인
 					while ((temp != NULL) && strcmp(temp->name, word)) {
 						temp = temp->next;
 					}
-					if (temp == NULL) {
+					if (temp == NULL) {		// 해당 이름이 없으면 x 전달
 						printf("Send No Result Message\n");
-						send(result, "x", 1, 0);
-						strcpy(result, "");
+						send(clientSock, "x", 1, 0);
 					}
-					else {
+					else {	// 정보 전달
 						sprintf(result, "%c/%s/%d/%s/%s", sc,
 							temp->name, temp->age, temp->nation, temp->depart);
 						send(clientSock, result, strlen(result), 0);
@@ -146,87 +147,110 @@ unsigned WINAPI HandleClient(void* arg) {
 						strcpy(result, "");
 					}
 					sc = '\0';
-					free(temp);
 					break;
-				case 'n':
+				case 'n':		// 해당 나라 정보
 					strcpy(word, strtok(NULL, "/"));
+					printf("%s\n", word);
 					while (temp !=NULL) {
 						if (!strcmp(temp->nation, word)) {
-							sprintf(result, "%c/%s", sc, temp->nation);
+							sprintf(result, "%c/%s", sc, temp->name);
 							send(clientSock, result, strlen(result), 0);
-							strcpy(result, "");
-						}
-						else {
-							printf("Send No Result Message\n");
-							send(result, "x", 1, 0);
+							printf("%s\n", result);
+							printf("Send Result\n");
 							strcpy(result, "");
 						}
 						temp = temp->next;
 					}
+					if (temp == NULL) {
+						send(clientSock, "x", 1, 0);
+					}
 					sc = '\0';
-					free(temp);
 					break;
 				case 'd':
 					strcpy(word, strtok(NULL, "/"));
+					printf("%s\n", word);
 					while (temp != NULL) {
 						if (!strcmp(temp->depart, word)) {
-							sprintf(result, "%c/%s", sc, temp->depart);
+							sprintf(result, "%c/%s", sc, temp->name);
 							send(clientSock, result, strlen(result), 0);
-							strcpy(result, "");
-						}
-						else {
-							printf("Send No Result Message\n");
-							send(result, "x", 1, 0);
+							printf("%s\n", result);
+							printf("Send Result\n");
 							strcpy(result, "");
 						}
 						temp = temp->next;
 					}
+					if (temp == NULL) {
+						send(clientSock, "x", 1, 0);
+					}
 					sc = '\0';
-					free(temp);
 					break;
 				case 'a':
 					num = atoi(strtok(NULL, "/"));
+					printf("%d\n", num);
 					while (temp != NULL) {
 						if (num == temp->age) {
-							sprintf(result, "%c/%d", sc, temp->age);
+							sprintf(result, "%c/%s", sc, temp->name);
+							printf("%s\n", result);
 							send(clientSock, result, strlen(result), 0);
-							strcpy(result, "");
-						}
-						else {
-							printf("Send No Result Message\n");
-							send(result, "x", 1, 0);
+							printf("Send Result\n");
 							strcpy(result, "");
 						}
 						temp = temp->next;
 					}
+					if (temp == NULL) {
+						send(clientSock, "x", 1, 0);
+					}
 					sc = '\0';
-					free(temp);
 					break;
 				case 'f':
 					printf("recve information\n");
-					strcpy(temp->name, strtok(NULL, "/"));
-					strcpy(temp->age, atoi(strtok(NULL, "/")));
-					strcpy(temp->nation, strtok(NULL, "/"));
-					strcpy(temp->depart, strtok(NULL, "/"));
+					ST* cu=(ST*)malloc(sizeof(ST));
+					strcpy(cu->name, strtok(NULL, "/"));
+					cu->age = atoi(strtok(NULL, "/"));
+					strcpy(cu->nation, strtok(NULL, "/"));
+					strcpy(cu->depart, strtok(NULL, "/"));
+					cu->next = stInfor;
+					stInfor = cu;
+					while (!cu == NULL) {
+						printf("%s\n", cu->name);
+						cu = cu->next;
+					}
 					send(clientSock, sc, 1, 0);
 					sc = '\0';
 					break;
 				case 'o':
 					strcpy(word, strtok(NULL, "/"));
-					ST *current=NULL;
-					while ((temp != NULL) && (temp->name) != word) {
-						current->next = temp;
-						temp = temp->next;
+					printf("%s\n", word);
+					ST *current, *state;
+					current = state = temp = stInfor;
+					while ((state != NULL) && strcmp(state->name, word)) {
+						current = state;
+						state = state->next;
 					}
-					current->next = NULL;
+					if (state == NULL) {
+						printf("Send No Result Message\n");
+						send(clientSock, "x", 1, 0);
+						break;
+					}
+					else {
+						if (!strcmp(stInfor->name, word))	stInfor = state->next;
+						else if (state->next == NULL)	current->next = NULL;
+						else current->next = state->next;
+						free(state);
+						temp = stInfor;
+						while (temp != NULL) {
+							printf("%s\n", temp->name);
+							temp = temp->next;
+						}
+					}
 					sc = '\0';
-					free(temp);
 					break;
 			}
-			
-			
+			strcpy(msg, "");
+			saveStudentData(fpin);
 		}
 	}
+	
 
 	printf("client left the Server\n");
 	//이 줄을 실행한다는 것은 해당 클라이언트가 나갔다는 사실임 따라서 해당 클라이언트를 배열에서 제거해줘야함
@@ -242,25 +266,41 @@ void setStudentData(FILE* fp) {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
 	printf("Server : Initiation of Data Load \n");
 	while (!feof(fp)) {
-		ST* current = (ST*)malloc(sizeof(ST));
-		fscanf(fp, "%s\t%d\t%s\t%s", current->name, &current->age, current->nation, current->depart); //파일로부터읽기
+		ST* curren = (ST*)malloc(sizeof(ST));
+		fscanf(fp, "%s\t%d\t%s\t%s", &curren->name, &curren->age, &curren->nation, &curren->depart); //파일로부터읽기
 		//	printf("%s\t%d\t%s\t%s\n",students[std_cnt].name,students[std_cnt].age, students[std_cnt].nation, students[std_cnt].depart); 
+		//printf("%s\t%d\t%s\t%s\n", current->name, current->age, current->nation, current->depart);
 		std_cnt++;
-		current->next = stInfor;
-		stInfor = current;
+		curren->next = stInfor;
+		stInfor = curren;
+	}
+	ST* head, * read;
+	for(head=stInfor;head!=NULL;head=read){
+		read = head;
+		printf("%s\n", read->name);
+		read = head->next;
 	}
 	printf("Server : End of Data Loading \n");
+	fclose(fp);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
 }
 
-void saveStudentData(FILE* fp) {
+void saveStudentData() {
+	FILE* fp;
+	if ((fp = fopen("students.txt", "w")) == NULL) {
+		printf("File open error...\n");
+		exit(-1);
+	}
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), YELLOW);
 	printf("Server : saveing of Data Load \n");
-	ST* current = stInfor;
-	while (current != NULL) {
-		fprintf(fp, "%s\t%d\t%s\t%s\n", current->name, current->age, current->nation, current->depart);
-		current->next = stInfor;
+	ST* current, *tt;
+	
+	for (current = stInfor; current != NULL; current = tt) {
+		tt = current;
+		fprintf(fp, "%s\t%d\t%s\t%s\n", tt->name, tt->age, tt->nation, tt->depart);
+		tt = current->next;
 	}
 	printf("Server : End of Data Loading \n");
+	fclose(fpin);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
 }
